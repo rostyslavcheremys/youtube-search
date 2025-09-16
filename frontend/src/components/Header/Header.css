@@ -1,0 +1,53 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    background: var(--background);
+    width: 100%;
+    height: 100px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 35px;
+}
+
+.header__label {
+    font-family: var(--second-family);
+    font-size: 30px;
+    font-weight: 700;
+    color: white;
+}
+
+.header__label-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.youtube__logo {
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    padding-right: 10px;
+}
+
+.header__favorite-icon{
+    padding-right: 35px;
+}
+
+.favorite-icon {
+    width: 35px !important;
+    height: 35px !important;
+    color: white;
+
+}
+
+.favorite-icon:hover {
+    color: #fe0100;
+    transform: scale(1.2);
+    transition: color 0.5s ease, transform 0.5s ease;
+}
