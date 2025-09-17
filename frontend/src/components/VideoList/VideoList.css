@@ -1,0 +1,10 @@
+.video-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.video-list__container {
+
+}

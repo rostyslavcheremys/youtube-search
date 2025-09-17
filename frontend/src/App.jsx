@@ -1,48 +1,70 @@
 import { useState, useEffect } from "react";
 
 import { Header } from "./components/Header/Header.jsx";
+import { VideoList } from "./components/VideoList/VideoList.jsx";
 
 function App() {
     const [query, setQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [savedVideos, setSavedVideos] = useState([]);
     const [activeTab, setActiveTab] = useState("search");
+    const [loading, setLoading] = useState(false);
+
+    const videoList = activeTab === "search" ? searchResults : savedVideos;
 
     const handleSearch = async () => {
-        if (!query.trim()) {
-            alert("Введіть пошуковий запит!");
-            return;
-        }
+        if (!query.trim()) return;
+        setLoading(true);
         try {
             const res = await fetch(`http://localhost:3000/search?q=${encodeURIComponent(query)}`);
             const data = await res.json();
             setSearchResults(Array.isArray(data) ? data : data.items || []);
-            setActiveTab("search");
-        } catch (error) {
-            console.error("Error fetching search:", error);
-            setSearchResults([]);
-        }
-    };
-
-    const handleSaved = () => setActiveTab("saved");
-
-    const handleSaveVideo = async (video) => {
-        if (!savedVideos.some(v => (v.id?.videoId || v.videoId) === (video.id?.videoId || video.videoId))) {
-            setSavedVideos([...savedVideos, video]);
-        }
-
-        try {
-            await fetch("http://localhost:3000/save", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(video),
-            });
         } catch (err) {
-            console.error("Не вдалося зберегти відео на сервері", err);
+            console.error("Failed to fetch videos", err);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const videosToDisplay = activeTab === "search" ? searchResults : savedVideos;
+    const handleToggleFavorite = async (video) => {
+        const videoId = video.id?.videoId || video.videoId;
+        const snippet = video.snippet || video;
+
+        if (!videoId) return;
+
+        const videoData = {
+            videoId,
+            title: snippet.title,
+            channelTitle: snippet.channelTitle,
+            publishedAt: snippet.publishedAt,
+            thumbnailUrl: snippet.thumbnails?.default?.url || snippet.thumbnailUrl || ""
+        };
+
+        const isAlreadySaved = savedVideos.some(v => v.videoId === videoId);
+
+        if (isAlreadySaved) {
+            setSavedVideos(savedVideos.filter(v => v.videoId !== videoId));
+            try {
+                await fetch(`http://localhost:3000/delete/${videoId}`, {
+                    method: "DELETE",
+                });
+            } catch (err) {
+                console.error("Failed to delete video from the server", err);
+            }
+        } else {
+            setSavedVideos([...savedVideos, videoData]);
+
+            try {
+                await fetch("http://localhost:3000/save", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(videoData),
+                });
+            } catch (err) {
+                console.error("Failed to save video on the server", err);
+            }
+        }
+    };
 
     useEffect(() => {
         const fetchSaved = async () => {
@@ -51,7 +73,7 @@ function App() {
                 const data = await res.json();
                 setSavedVideos(data);
             } catch (err) {
-                console.error("Не вдалося завантажити збережені відео", err);
+                console.error("Failed to load saved videos", err);
             }
         };
         fetchSaved();
@@ -62,65 +84,23 @@ function App() {
             <Header
                 query={query}
                 setQuery={setQuery}
-                onSaved={handleSaved}
+                setActiveTab={() => {
+                    setActiveTab("search");
+                    setQuery([]);
+                }}
+                onSaved={() => {
+                    setActiveTab("saved");
+                    setQuery([]);
+                }}
                 onSearch={handleSearch}
             />
 
-
-
-            <div style={{marginTop: "20px"}}>
-                {videosToDisplay.length === 0 && <p>Немає відео для відображення</p>}
-                {videosToDisplay.map((v, index) => {
-                    const videoId = v.id?.videoId || v.videoId;
-                    const snippet = v.snippet || v;
-
-                    if (!videoId || !snippet) return null;
-
-                    const isSaved = savedVideos.some(
-                        vid => (vid.id?.videoId || vid.videoId) === videoId
-                    );
-
-                    return (
-                        <div key={videoId || index} style={{marginBottom: "20px", position: "relative"}}>
-                            <a
-                                href={`https://youtube.com/watch?v=${videoId}`}
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                <img
-                                    src={snippet.thumbnails?.medium?.url || snippet.thumbnailUrl}
-                                    alt={snippet.title}
-                                />
-                                <h3>{snippet.title}</h3>
-                            </a>
-                            <p>
-                                <b>{snippet.channelTitle}</b> –{" "}
-                                {snippet.publishedAt && !isNaN(Date.parse(snippet.publishedAt))
-                                    ? new Date(snippet.publishedAt).toDateString()
-                                    : "Дата недоступна"}
-                            </p>
-                            <p>{snippet.description}</p>
-                            {activeTab === "search" && (
-                                <button
-                                    onClick={() => handleSaveVideo(v)}
-                                    style={{
-                                        position: "absolute",
-                                        top: 0,
-                                        right: 0,
-                                        fontSize: "20px",
-                                        background: "transparent",
-                                        border: "none",
-                                        cursor: "pointer",
-                                        color: isSaved ? "red" : "gray"
-                                    }}
-                                >
-                                    ♥
-                                </button>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
+            <VideoList
+                videoList={videoList}
+                savedVideos={savedVideos}
+                handleSaveVideo={handleToggleFavorite}
+                loading={loading}
+            />
         </div>
     );
 }

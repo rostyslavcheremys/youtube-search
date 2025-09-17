@@ -8,15 +8,19 @@
     align-items: center;
 }
 
-.header-container {
+.header__container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding-left: 35px;
 }
 
+.header__logo {
+    cursor: pointer;
+}
+
 .header__label {
-    font-family: var(--second-family);
+    font-family: var(--font-family);;
     font-size: 30px;
     font-weight: 700;
     color: white;
@@ -26,6 +30,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .youtube__logo {
@@ -35,19 +40,19 @@
     padding-right: 10px;
 }
 
-.header__favorite-icon{
+.header__favorite{
     padding-right: 35px;
 }
 
-.favorite-icon {
+.favorite {
     width: 35px !important;
     height: 35px !important;
     color: white;
     cursor: pointer;
 }
 
-.favorite-icon:hover {
-    color: #fe0100;
+.favorite:hover {
+    color: var(--second-color);
     transform: scale(1.2);
     transition: color 0.5s ease, transform 0.5s ease;
 }

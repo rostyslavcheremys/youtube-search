@@ -1,0 +1,21 @@
+.favorite-button {
+    display: flex;
+    width: 35px;
+}
+
+.favorite-icon {
+    width: 35px !important;
+    height: 35px !important;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+}
+
+.favorite-icon.saved {
+    color: var(--second-color);
+}
+
+.favorite-button:hover .favorite-icon {
+    color: var(--second-color);
+    transition: color 0.5s ease;
+}
+
