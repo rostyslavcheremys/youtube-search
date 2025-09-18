@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import { Header } from "./components/Header/Header.jsx";
 import { VideoList } from "./components/VideoList/VideoList.jsx";
+import { Footer } from "./components/Footer/Footer.jsx";
 
 function App() {
     const [query, setQuery] = useState("");
@@ -86,21 +87,26 @@ function App() {
                 setQuery={setQuery}
                 setActiveTab={() => {
                     setActiveTab("search");
-                    setQuery([]);
+                    setSearchResults([])
+                    setQuery("");
                 }}
                 onSaved={() => {
                     setActiveTab("saved");
-                    setQuery([]);
+                    setQuery("");
                 }}
                 onSearch={handleSearch}
             />
 
-            <VideoList
-                videoList={videoList}
-                savedVideos={savedVideos}
-                handleSaveVideo={handleToggleFavorite}
-                loading={loading}
-            />
+            <div className="app__video-list">
+                <VideoList
+                    videoList={videoList}
+                    savedVideos={savedVideos}
+                    handleSaveVideo={handleToggleFavorite}
+                    loading={loading}
+                />
+
+                {videoList.length !== 0 && <Footer />}
+            </div>
         </div>
     );
 }

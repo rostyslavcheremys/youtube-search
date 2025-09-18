@@ -1,0 +1,40 @@
+.footer {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    width: 100%;
+    padding: 25px 0;
+    color: white;
+    background: var(--primary-color);
+    margin-top: 20px;
+}
+
+.footer__youtube {
+    display: flex;
+    font-family: var(--third-family);
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    padding-bottom: 3px;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+    transition: color 0.3s ease-in-out;
+}
+
+.footer__youtube:hover {
+    color: var(--second-color);
+}
+
+.youtube__icon {
+    margin-right: 5px;
+    width: 20px;
+}
+
+.footer__developer {
+    font-family: var(--font-family);
+    margin: 0;
+    font-size: 12px;
+    padding-top: 5px;
+}
