@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import { Header } from "./components/Header/Header.jsx";
 import { VideoList } from "./components/VideoList/VideoList.jsx";
 import { Footer } from "./components/Footer/Footer.jsx";
@@ -11,11 +10,12 @@ function App() {
     const [activeTab, setActiveTab] = useState("search");
     const [loading, setLoading] = useState(false);
 
-    const videoList = activeTab === "search" ? searchResults : savedVideos;
+    const videoList = activeTab === "search" || searchResults.length > 0 ? searchResults : savedVideos;
 
     const handleSearch = async () => {
         if (!query.trim()) return;
         setLoading(true);
+        setActiveTab("search");
         try {
             const res = await fetch(`http://localhost:3000/search?q=${encodeURIComponent(query)}`);
             const data = await res.json();
@@ -38,13 +38,13 @@ function App() {
             title: snippet.title,
             channelTitle: snippet.channelTitle,
             publishedAt: snippet.publishedAt,
-            thumbnailUrl: snippet.thumbnails?.default?.url || snippet.thumbnailUrl || ""
+            thumbnailUrl: snippet.thumbnails?.default?.url || snippet.thumbnailUrl || "",
         };
 
-        const isAlreadySaved = savedVideos.some(v => v.videoId === videoId);
+        const isAlreadySaved = savedVideos.some((v) => v.videoId === videoId);
 
         if (isAlreadySaved) {
-            setSavedVideos(savedVideos.filter(v => v.videoId !== videoId));
+            setSavedVideos(savedVideos.filter((v) => v.videoId !== videoId));
             try {
                 await fetch(`http://localhost:3000/delete/${videoId}`, {
                     method: "DELETE",
@@ -54,7 +54,6 @@ function App() {
             }
         } else {
             setSavedVideos([...savedVideos, videoData]);
-
             try {
                 await fetch("http://localhost:3000/save", {
                     method: "POST",
@@ -87,26 +86,25 @@ function App() {
                 setQuery={setQuery}
                 setActiveTab={() => {
                     setActiveTab("search");
-                    setSearchResults([])
+                    setSearchResults([]);
                     setQuery("");
                 }}
                 onSaved={() => {
                     setActiveTab("saved");
+                    setSearchResults([]);
                     setQuery("");
                 }}
                 onSearch={handleSearch}
             />
 
-            <div className="app__video-list">
-                <VideoList
-                    videoList={videoList}
-                    savedVideos={savedVideos}
-                    handleSaveVideo={handleToggleFavorite}
-                    loading={loading}
-                />
+            <VideoList
+                videoList={videoList}
+                savedVideos={savedVideos}
+                handleSaveVideo={handleToggleFavorite}
+                loading={loading}
+            />
 
-                {videoList.length !== 0 && <Footer />}
-            </div>
+            {videoList.length !== 0 && <Footer />}
         </div>
     );
 }

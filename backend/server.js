@@ -18,12 +18,22 @@ const db = await open({
     driver: sqlite3.Database,
 });
 
+await db.exec(`
+    CREATE TABLE IF NOT EXISTS videos (
+      videoId TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      channelTitle TEXT,
+      publishedAt TEXT,
+      thumbnailUrl TEXT
+    );
+`);
+
 app.get("/search", async (req, res) => {
     const query = req.query.q;
     if (!query) return res.status(400).json({ error: "Missing query param q" });
 
     const apiKey = process.env.YOUTUBE_API_KEY;
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${encodeURIComponent(
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(
         query
     )}&key=${apiKey}`;
 
