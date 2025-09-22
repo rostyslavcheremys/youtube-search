@@ -79,7 +79,6 @@
     }
 }
 
-
 @media (max-width: 705px) {
     .video-item {
         flex-direction: column;

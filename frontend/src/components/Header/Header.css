@@ -12,7 +12,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding-left: 35px;
+    padding: 0 35px;
 }
 
 .header__logo {
@@ -41,7 +41,7 @@
 }
 
 .header__favorite{
-    padding-right: 35px;
+    padding: 0 35px;
 }
 
 .favorite {
@@ -55,4 +55,10 @@
     color: var(--second-color);
     transform: scale(1.2);
     transition: color 0.5s ease, transform 0.5s ease;
+}
+
+@media (max-width: 655px) {
+    .header__label {
+        display: none;
+    }
 }

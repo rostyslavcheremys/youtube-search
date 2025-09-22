@@ -34,3 +34,39 @@
 .search-icon {
     color: white;
 }
+
+@media (max-width: 955px) {
+    .MuiInputBase-input {
+        width: 400px !important;
+    }
+}
+
+@media (max-width: 855px) {
+    .MuiInputBase-input {
+        width: 300px !important;
+    }
+}
+
+@media (max-width: 755px) {
+    .MuiInputBase-input {
+        width: 200px !important;
+    }
+}
+
+@media (max-width: 655px) {
+    .MuiInputBase-input {
+        width: 250px !important;
+    }
+}
+
+@media (max-width: 575px) {
+    .MuiInputBase-input {
+        width: 200px !important;
+    }
+}
+
+@media (max-width: 520px) {
+    .MuiInputBase-input {
+        width: 150px !important;
+    }
+}

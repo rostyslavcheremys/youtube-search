@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import { Header } from "./components/Header/Header.jsx";
 import { VideoList } from "./components/VideoList/VideoList.jsx";
 import { Footer } from "./components/Footer/Footer.jsx";
@@ -53,7 +54,7 @@ function App() {
                 console.error("Failed to delete video from the server", err);
             }
         } else {
-            setSavedVideos([...savedVideos, videoData]);
+            setSavedVideos([videoData, ...savedVideos]);
             try {
                 await fetch("http://localhost:3000/save", {
                     method: "POST",
